@@ -1,0 +1,285 @@
+apiVersion: devops.alauda.io/v1alpha1
+kind: PipelineTemplate
+metadata:
+  name: alaudaSyncImage
+  annotations:
+    alauda.io/displayName.zh-CN: 同步镜像
+    alauda.io/displayName.en: Sync Image
+    alauda.io/description.zh-CN: 同步镜像
+    alauda.io/description.en: Sync Image
+    alauda.io/readme.zh-CN: 同步镜像
+    alauda.io/readme.en: Sync Image
+    alauda.io/version: v0.1
+    alauda.io/style.icon: 
+  labels:
+    category: syncImage
+spec:
+  engine: graph
+  withSCM: false
+  options:
+    timeout: 1800
+  stages:
+    - name: SyncImage
+      tasks:
+        - name: SyncImage
+          type: public/alaudasyncimage
+  arguments:
+    - displayName:
+        zh-CN: "镜像信息"
+        en: "Image Info"
+      items:
+        - name: "soruceusexsit"
+          schema:
+            type: boolean
+          binding:
+            - SyncImage.args.sourceusexsit
+          display:
+            type: boolean
+            name:
+              zh-CN: "使用平台镜像"
+              en: "Use image on platform"
+            description:
+              zh-CN: "使用平台镜像"
+              en: "if enabled use image on platform to sync image"
+          required: false
+          default: true
+
+        - name: sourceAlaimage
+          schema:
+            type: alauda.io/imagerepositorymix
+          binding:
+            - SyncImage.args.sourceAlaimage
+          display:
+            type: alauda.io/imagerepositorymix
+            name:
+              zh-CN: "源镜像仓库"
+              en: "Image repository to use"
+            description:
+              zh-CN: "使用该源镜像仓库中的镜像去更新镜像"
+              en: "use image in this repository to sync image"
+          required: true
+          relation:
+            - action: show
+              when:
+                name: soruceusexsit
+                value: true
+        - name: "sourceimageTag"
+          schema:
+            type: string
+          binding:
+            - SyncImage.args.sourceimageTag
+          display:
+            type: alauda.io/imagetag
+            name:
+              zh-CN: "源镜像版本"
+              en: "Image tag"
+            description:
+              zh-CN: "使用该源镜像版本去更新镜像"
+              en: "image tag that will update to"
+          required: true
+          default: latest
+          relation:
+            - action: show
+              when:
+                name: soruceusexsit
+                value: true
+        - name: "registory"
+          schema:
+            type: string
+          binding:
+            - SyncImage.args.registory
+          display:
+            type: string
+            name:
+              zh-CN: "源镜像源地址"
+              en: "registory"
+            description:
+              zh-CN: "用户更新镜像时使用的源镜像registory地址"
+              en: "Address of your image registry"
+          required: true
+          relation:
+            - action: show
+              when:
+                name: soruceusexsit
+                value: false
+        - name: "sourceimage"
+          schema:
+            type: string
+          binding:
+            - SyncImage.args.sourceimage
+          display:
+            type: string
+            name:
+              zh-CN: "源镜像仓库"
+              en: "sourceimage"
+            description:
+              zh-CN: "更新镜像使用的源镜像仓库"
+              en: "Image registory to Sync image"
+          required: true
+          relation:
+            - action: show
+              when:
+                name: soruceusexsit
+                value: false
+        - name: "sourcetag"
+          schema:
+            type: string
+          binding:
+            - SyncImage.args.sourcetag
+          display:
+            type: string
+            name:
+              zh-CN: "源镜像标签"
+              en: "sourcetag"
+            description:
+              zh-CN: "更新镜像使用的源镜像标签"
+              en: "source image tag"
+          required: true
+          relation:
+            - action: show
+              when:
+                name: soruceusexsit
+                value: false
+        - name: sourceimageRegistryCredentialsId
+          schema:
+            type: string
+          binding:
+            - SyncImage.args.sourceimageRegistryCredentialsId
+          display:
+            type: alauda.io/jenkinscredentials
+            name:
+              zh-CN: "源镜像registry凭据"
+              en: "Registry credentials"
+            description:
+              zh-CN: "源目标镜像所在镜像中心的登录凭据"
+              en: "Credentials of source registry"
+          required: false
+        - name: "usexsit"
+          schema:
+            type: boolean
+          binding:
+            - SyncImage.args.usexsit
+          display:
+            type: boolean
+            name:
+              zh-CN: "更新平台镜像"
+              en: "sync the image on platform"
+            description:
+              zh-CN: "更新平台镜像"
+              en: "if enabled will sync image on platform"
+          required: false
+          default: true
+        - name: "targetregistory"
+          schema:
+            type: string
+          binding:
+            - SyncImage.args.targetregistory
+          display:
+            type: string
+            name:
+              zh-CN: "目标镜像源地址"
+              en: "TargetRegistory"
+            description:
+              zh-CN: "目标镜像仓库源"
+              en: "Address of your resource image registory"
+          required: true
+          relation:
+            - action: show
+              when:
+                name: usexsit
+                value: false
+        - name: "targetimage"
+          schema:
+            type: string
+          binding:
+            - SyncImage.args.targetimage
+          display:
+            type: string
+            name:
+              zh-CN: "目标镜像仓库"
+              en: "Target image respository"
+            description:
+              zh-CN: "目标镜像仓库"
+              en: "image repository that will sync to"
+          required: true
+          relation:
+            - action: show
+              when:
+                name: usexsit
+                value: false
+        - name: "targettag"
+          schema:
+            type: string
+          binding:
+            - SyncImage.args.targettag
+          display:
+            type: string
+            name:
+              zh-CN: "目标镜像标签"
+              en: "Target image tag"
+            description:
+              zh-CN: "目标镜像标签"
+              en: "image tag that will sync to"
+          required: true
+          relation:
+            - action: show
+              when:
+                name: usexsit
+                value: false
+        - name: image
+          schema:
+            type: alauda.io/imagerepositorymix
+          binding:
+            - SyncImage.args.image
+          display:
+            type: alauda.io/imagerepositorymix
+            name:
+              zh-CN: "目标镜像仓库"
+              en: "Target image repository to use"
+            description:
+              zh-CN: "目标镜像仓库"
+              en: "Target image repository to use"
+          required: true
+          relation:
+            - action: show
+              when:
+                name: usexsit
+                value: true
+        - name: "imageTag"
+          schema:
+            type: string
+          binding:
+            - SyncImage.args.imageTag
+          display:
+            type: alauda.io/imagetag
+            name:
+              zh-CN: "目标镜像版本"
+              en: "Target image tag"
+            description:
+              zh-CN: "更新后的目标镜像标签"
+              en: "Image tag that will sync to"
+          required: true
+          default: latest
+          relation:
+            - action: show
+              when:
+                name: usexsit
+                value: true
+        - name: imageRegistryCredentialsId
+          schema:
+            type: string
+          binding:
+            - SyncImage.args.imageRegistryCredentialsId
+          display:
+            type: alauda.io/jenkinscredentials
+            name:
+              zh-CN: "目标镜像registry凭据"
+              en: "Registry credentials"
+            description:
+              zh-CN: "推送目标镜像所在镜像中心的登录凭据"
+              en: "Credentials of target registry"
+          required: false
+        
+
+
+
