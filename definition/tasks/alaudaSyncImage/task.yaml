@@ -35,13 +35,17 @@ spec:
           {{- end}}
           {{- if .sourceimageRegistryCredentialsId}}
               withCredentials([usernamePassword(credentialsId: "{{.sourceimageRegistryCredentialsId}}", usernameVariable: "USERNAME", passwordVariable: "PASSWORD")]){
-                  sh "docker login ${Registory} -u ${USERNAME} -p ${PASSWORD}"
+                  sh "echo ${PASSWORD} > ./SourcePassWord"
+                  sh "cat ./SourcePassWord|docker login ${Registory}  --username ${USERNAME} --password-stdin"
           {{end}}
               sh "docker pull ${Image}"
               sh "docker tag ${Image} ${TargetImage}"
               {{- if .imageRegistryCredentialsId}}
-                  withCredentials([usernamePassword(credentialsId: "{{.imageRegistryCredentialsId}}", usernameVariable: "USERNAME", passwordVariable: "PASSWORD")]){
-                    sh "docker login ${TargetRegistory} -u ${USERNAME} -p ${PASSWORD}"
+                  withCredentials([usernamePassword(credentialsId: "{{.imageRegistryCredentialsId}}", usernameVariable: "TARGETUSERNAME", passwordVariable: "TARGETPASSWORD")]){
+                    sh "echo ${TARGETPASSWORD} > ./PassWord"
+                    echo "${TargetRegistory}"
+                    sh "cat ./PassWord|docker login ${TargetRegistory}  --username ${TARGETUSERNAME} --password-stdin"
+                    
                   }
               {{- end}}
               sh "docker push ${TargetImage}"
@@ -109,7 +113,7 @@ spec:
           zh-CN: "源镜像源地址"
           en: "Registory"
         description:
-          zh-CN: "用户更新镜像时使用的源镜像registory地址"
+          zh-CN: "用户更新镜像时使用的源镜像registory地址 eg: index.docker.io"
           en: "Address of your image registory"
       required: false
       relation:
@@ -126,7 +130,7 @@ spec:
           zh-CN: "源镜像仓库"
           en: "sourceimage"
         description:
-          zh-CN: "更新镜像使用的源镜像仓库"
+          zh-CN: "更新镜像使用的源镜像仓库 eg: alaudaorg/repository"
           en: "Image registory to Sync image"
       required: true
       relation:
@@ -143,7 +147,7 @@ spec:
           zh-CN: "源镜像标签"
           en: "sourcetag"
         description:
-          zh-CN: "更新镜像使用的源镜像标签"
+          zh-CN: "更新镜像使用的源镜像标签 eg: lastest"
           en: "source iamge tag"
       required: true
       relation:
@@ -209,7 +213,7 @@ spec:
           zh-CN: "目标镜像源"
           en: "TargetRegistory"
         description:
-          zh-CN: "目标镜像仓库源"
+          zh-CN: "目标镜像仓库源 eg:index.docker.io"
           en: "Address of your resource image registory"
       required: false
       relation:
@@ -223,10 +227,10 @@ spec:
       display:
         type: string
         name:
-          zh-CN: "目标镜像仓库"
+          zh-CN: "目标镜像仓库 "
           en: "targetimage"
         description:
-          zh-CN: "目标镜像仓库"
+          zh-CN: "目标镜像仓库 eg:alaudaorg/repository"
           en: "image repository that will sync to"
       required: true
       relation:
@@ -240,10 +244,10 @@ spec:
       display:
         type: string
         name:
-          zh-CN: "目标镜像标签"
+          zh-CN: "目标镜像标签 "
           en: "targettag"
         description:
-          zh-CN: "目标镜像标签"
+          zh-CN: "目标镜像标签 eg:latest"
           en: "image tag that will sync to"
       required: false
       relation:
@@ -269,7 +273,6 @@ spec:
           zh-CN: "源镜像registry凭据"
           en: "source registry credential"
       required: false
-
 
 
 

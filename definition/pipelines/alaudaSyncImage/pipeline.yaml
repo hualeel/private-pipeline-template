@@ -94,7 +94,7 @@ spec:
               zh-CN: "源镜像源地址"
               en: "registory"
             description:
-              zh-CN: "用户更新镜像时使用的源镜像registory地址"
+              zh-CN: "用户更新镜像时使用的源镜像registory地址 eg: index.docker.io"
               en: "Address of your image registry"
           required: true
           relation:
@@ -113,7 +113,7 @@ spec:
               zh-CN: "源镜像仓库"
               en: "sourceimage"
             description:
-              zh-CN: "更新镜像使用的源镜像仓库"
+              zh-CN: "更新镜像使用的源镜像仓库 eg: alaudaorg/repository"
               en: "Image registory to Sync image"
           required: true
           relation:
@@ -132,7 +132,7 @@ spec:
               zh-CN: "源镜像标签"
               en: "sourcetag"
             description:
-              zh-CN: "更新镜像使用的源镜像标签"
+              zh-CN: "更新镜像使用的源镜像标签 eg: lastest"
               en: "source image tag"
           required: true
           relation:
@@ -177,10 +177,10 @@ spec:
           display:
             type: string
             name:
-              zh-CN: "目标镜像源地址"
+              zh-CN: "目标镜像源地址 "
               en: "TargetRegistory"
             description:
-              zh-CN: "目标镜像仓库源"
+              zh-CN: "目标镜像仓库源 eg:index.docker.io" 
               en: "Address of your resource image registory"
           required: true
           relation:
@@ -199,7 +199,7 @@ spec:
               zh-CN: "目标镜像仓库"
               en: "Target image respository"
             description:
-              zh-CN: "目标镜像仓库"
+              zh-CN: "目标镜像仓库 eg:alaudaorg/repository"
               en: "image repository that will sync to"
           required: true
           relation:
@@ -215,10 +215,10 @@ spec:
           display:
             type: string
             name:
-              zh-CN: "目标镜像标签"
+              zh-CN: "目标镜像标签 "
               en: "Target image tag"
             description:
-              zh-CN: "目标镜像标签"
+              zh-CN: "目标镜像标签 eg: latest"
               en: "image tag that will sync to"
           required: true
           relation:
@@ -280,6 +280,5 @@ spec:
               en: "Credentials of target registry"
           required: false
         
-
 
 
