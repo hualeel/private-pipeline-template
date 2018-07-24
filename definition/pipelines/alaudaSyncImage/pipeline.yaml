@@ -9,7 +9,7 @@ metadata:
     alauda.io/description.en: Sync Image
     alauda.io/readme.zh-CN: 同步镜像
     alauda.io/readme.en: Sync Image
-    alauda.io/version: v0.1
+    alauda.io/version: v0.1.1
     alauda.io/style.icon: 
   labels:
     category: syncImage
