@@ -23,6 +23,9 @@ spec:
       tasks:
         - name: SyncImage
           type: public/alaudasyncimage
+          approve:
+            message: "是否要真的同步镜像"
+            timeout: 3600 
   arguments:
     - displayName:
         zh-CN: "镜像信息"
