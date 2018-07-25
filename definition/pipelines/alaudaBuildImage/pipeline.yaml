@@ -26,17 +26,6 @@ spec:
       tasks:
         - name: Clone
           type: public/clone
-    - name: CodeScan
-      tasks:
-        - name: CodeScan
-          type: public/alaudaCodeScan
-          options:
-            timeout: 7200
-          relation:
-            - action: show
-              when:
-                name: sonarScanEnabled
-                value: true
     - name: BuildImage
       tasks:
         - name: BuildImage
