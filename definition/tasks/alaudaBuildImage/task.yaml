@@ -19,8 +19,24 @@ spec:
     label: docker
   body: |+
     script{
-      sh "registry=$(sed -n '3p' alaudaci.yml| sed 's/.*image:\([^/]*\)\(.*\)/\1/g'|sed "s/ //g")"
-      echo "$registry"
+
+
+      sh '''
+        all=$(sed -n '3p' alaudaci.yml)
+        repo=${all#*:}
+        repositry=${repo%%/*}
+      '''
+
+
+
+      {{- if .useYaml}}
+
+withCredentials([usernamePassword(credentialsId: "{{.ciImageRegistryCredentialsId}}", usernameVariable: "USERNAME", passwordVariable: "PASSWORD")]){
+              sh "echo ${PASSWORD} > ./SourcePassWord"
+              sh "cat ./SourcePassWord|docker login ${repositry}  --username ${USERNAME} --password-stdin"
+  {{- end}}
+
+
       def build = alauda.build().setContextPath("{{.contextDir}}")
       {{- if .ciEnabled}}
       build.
@@ -33,6 +49,9 @@ spec:
         {{- end}}
         startBuild()
       {{- end}}
+  {{- if .useYaml}}
+      }
+  {{end}}
 
       BUILD_IMAGE_ENABLED = {{.buildImageEnabled}}
       {{- if .buildImageEnabled}}
