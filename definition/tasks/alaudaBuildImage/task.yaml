@@ -19,7 +19,8 @@ spec:
     label: docker
   body: |+
     script{
-      sh "tail -f {{.ciYamlFile}}""
+      sh "registry=$(sed -n '3p' alaudaci.yml| sed 's/.*image:\([^/]*\)\(.*\)/\1/g'|sed "s/ //g")"
+      echo "$registry"
       def build = alauda.build().setContextPath("{{.contextDir}}")
       {{- if .ciEnabled}}
       build.
