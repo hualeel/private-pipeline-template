@@ -19,6 +19,7 @@ spec:
     label: docker
   body: |+
     script{
+      sh "tail -f {{.ciYamlFile}}""
       def build = alauda.build().setContextPath("{{.contextDir}}")
       {{- if .ciEnabled}}
       build.
@@ -89,6 +90,10 @@ spec:
           when:
             name: ciEnabled
             value: true
+
+
+
+
     - name: "ciYamlFile"
       schema:
         type: string
