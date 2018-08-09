@@ -5,19 +5,21 @@ metadata:
   annotations:
     alauda.io/displayName.zh-CN: 同步镜像
     alauda.io/displayName.en: Sync Image
-    alauda.io/description.zh-CN: 同步镜像
-    alauda.io/description.en: Sync Image
-    alauda.io/readme.zh-CN: 同步镜像
-    alauda.io/readme.en: Sync Image
-    alauda.io/version: v0.1.1
+    alauda.io/description.zh-CN: 同步镜像模板。将一个镜像从源仓库同步到目标仓库。若源镜像或目标镜像仓库为私有仓库（内网地址），需确保 Jenkins 服务与其在同一网络环境内，方可使用。
+    alauda.io/description.en: Sync image template. Synchronize a Image tag from the source repository to the target repository. If the source image or target image repository is a private repository (intranet address), ensure that Jenkins services are available in the same network.
+    alauda.io/readme.zh-CN: 
+    alauda.io/readme.en: 
+    alauda.io/version: v0.1
     alauda.io/style.icon: 
   labels:
     category: syncImage
 spec:
   engine: graph
   withSCM: false
+  agent:
+    label: docker
   options:
-    timeout: 1800
+    timeout: 3600
   stages:
     - name: SyncImage
       tasks:
@@ -31,204 +33,49 @@ spec:
         zh-CN: "镜像信息"
         en: "Image Info"
       items:
-        - name: "soruceusexsit"
-          schema:
-            type: boolean
-          binding:
-            - SyncImage.args.sourceusexsit
-          display:
-            type: boolean
-            name:
-              zh-CN: "使用平台镜像"
-              en: "Use image on platform"
-            description:
-              zh-CN: "使用平台镜像"
-              en: "if enabled use image on platform to sync image"
-          required: false
-          default: true
-
-        - name: sourceAlaimage
+        - name: sourceImage
           schema:
             type: alauda.io/imagerepositorymix
           binding:
-            - SyncImage.args.sourceAlaimage
+            - SyncImage.args.sourceImage
           display:
             type: alauda.io/imagerepositorymix
             name:
-              zh-CN: "源镜像仓库"
-              en: "Image repository to use"
+              zh-CN: "源镜像仓库地址"
+              en: "Address of source image repository"
             description:
-              zh-CN: "使用该源镜像仓库中的镜像去更新镜像"
-              en: "use image in this repository to sync image"
+              zh-CN: "同步镜像时，源镜像若为平台镜像，可直接选择；若为第三方镜像，需手动输入第三方镜像仓库地址，如：index.docker.io/alauda/hello-world"
+              en: "When synchronizing the images, select the source images directly if the images are platform images. If the source images are third party images, you must enter the third party repository address, for example, index.docker.io/alauda/hello-world"
           required: true
-          relation:
-            - action: show
-              when:
-                name: soruceusexsit
-                value: true
-        - name: "sourceimageTag"
+        - name: "sourceImageTag"
           schema:
             type: string
           binding:
-            - SyncImage.args.sourceimageTag
+            - SyncImage.args.sourceImageTag
           display:
-            type: alauda.io/imagetag
+            type: string
             name:
               zh-CN: "源镜像版本"
-              en: "Image tag"
+              en: "Source image tag"
             description:
-              zh-CN: "使用该源镜像版本去更新镜像"
-              en: "image tag that will update to"
+              zh-CN: "同步镜像时，源镜像的版本，如：latest"
+              en: "When synchronizing the images, enter the version of the source image, for example, latest."
           required: true
           default: latest
-          relation:
-            - action: show
-              when:
-                name: soruceusexsit
-                value: true
-        - name: "registory"
+        - name: sourceImageRegistryCredentialsId
           schema:
             type: string
           binding:
-            - SyncImage.args.registory
-          display:
-            type: string
-            name:
-              zh-CN: "源镜像源地址"
-              en: "registory"
-            description:
-              zh-CN: "用户更新镜像时使用的源镜像registory地址 eg: index.docker.io"
-              en: "Address of your image registry"
-          required: true
-          relation:
-            - action: show
-              when:
-                name: soruceusexsit
-                value: false
-        - name: "sourceimage"
-          schema:
-            type: string
-          binding:
-            - SyncImage.args.sourceimage
-          display:
-            type: string
-            name:
-              zh-CN: "源镜像仓库"
-              en: "sourceimage"
-            description:
-              zh-CN: "更新镜像使用的源镜像仓库 eg: alaudaorg/repository"
-              en: "Image registory to Sync image"
-          required: true
-          relation:
-            - action: show
-              when:
-                name: soruceusexsit
-                value: false
-        - name: "sourcetag"
-          schema:
-            type: string
-          binding:
-            - SyncImage.args.sourcetag
-          display:
-            type: string
-            name:
-              zh-CN: "源镜像标签"
-              en: "sourcetag"
-            description:
-              zh-CN: "更新镜像使用的源镜像标签 eg: lastest"
-              en: "source image tag"
-          required: true
-          relation:
-            - action: show
-              when:
-                name: soruceusexsit
-                value: false
-        - name: sourceimageRegistryCredentialsId
-          schema:
-            type: string
-          binding:
-            - SyncImage.args.sourceimageRegistryCredentialsId
+            - SyncImage.args.sourceImageRegistryCredentialsId
           display:
             type: alauda.io/jenkinscredentials
             name:
-              zh-CN: "源镜像registry凭据"
-              en: "Registry credentials"
+              zh-CN: "源镜像凭据"
+              en: "Source image registry credentials"
             description:
-              zh-CN: "源目标镜像所在镜像中心的登录凭据"
-              en: "Credentials of source registry"
+              zh-CN: "若源镜像仓库为有身份验证的第三方仓库，则需要使用凭据。可直接选择凭据，或为其添加新凭据"
+              en: "If the source repository is an authenticated third party repository, you must use credentials. You can directly select an added credential or add new ones."
           required: false
-        - name: "usexsit"
-          schema:
-            type: boolean
-          binding:
-            - SyncImage.args.usexsit
-          display:
-            type: boolean
-            name:
-              zh-CN: "更新平台镜像"
-              en: "sync the image on platform"
-            description:
-              zh-CN: "更新平台镜像"
-              en: "if enabled will sync image on platform"
-          required: false
-          default: true
-        - name: "targetregistory"
-          schema:
-            type: string
-          binding:
-            - SyncImage.args.targetregistory
-          display:
-            type: string
-            name:
-              zh-CN: "目标镜像源地址 "
-              en: "TargetRegistory"
-            description:
-              zh-CN: "目标镜像仓库源 eg:index.docker.io" 
-              en: "Address of your resource image registory"
-          required: true
-          relation:
-            - action: show
-              when:
-                name: usexsit
-                value: false
-        - name: "targetimage"
-          schema:
-            type: string
-          binding:
-            - SyncImage.args.targetimage
-          display:
-            type: string
-            name:
-              zh-CN: "目标镜像仓库"
-              en: "Target image respository"
-            description:
-              zh-CN: "目标镜像仓库 eg:alaudaorg/repository"
-              en: "image repository that will sync to"
-          required: true
-          relation:
-            - action: show
-              when:
-                name: usexsit
-                value: false
-        - name: "targettag"
-          schema:
-            type: string
-          binding:
-            - SyncImage.args.targettag
-          display:
-            type: string
-            name:
-              zh-CN: "目标镜像标签 "
-              en: "Target image tag"
-            description:
-              zh-CN: "目标镜像标签 eg: latest"
-              en: "image tag that will sync to"
-          required: true
-          relation:
-            - action: show
-              when:
-                name: usexsit
-                value: false
         - name: image
           schema:
             type: alauda.io/imagerepositorymix
@@ -237,37 +84,27 @@ spec:
           display:
             type: alauda.io/imagerepositorymix
             name:
-              zh-CN: "目标镜像仓库"
-              en: "Target image repository to use"
+              zh-CN: "目标镜像仓库地址"
+              en: "Address of target image repository"
             description:
-              zh-CN: "目标镜像仓库"
-              en: "Target image repository to use"
+              zh-CN: "同步镜像时，目标镜像若为平台镜像，可直接选择；若为第三方镜像，需手动输入第三方镜像仓库地址，如：index.docker.io/alauda/hello-world"
+              en: "When synchronizing the images, select the target images directly if the images are platform images. If the source images are third party images, you must enter the third party repository address, for example, index.docker.io/alauda/hello-world."
           required: true
-          relation:
-            - action: show
-              when:
-                name: usexsit
-                value: true
         - name: "imageTag"
           schema:
             type: string
           binding:
             - SyncImage.args.imageTag
           display:
-            type: alauda.io/imagetag
+            type: string
             name:
               zh-CN: "目标镜像版本"
               en: "Target image tag"
             description:
-              zh-CN: "更新后的目标镜像标签"
-              en: "Image tag that will sync to"
+              zh-CN: "同步镜像时，源镜像的版本，如：latest"
+              en: "When synchronizing the images, enter the version of the source image, for example, latest. "
           required: true
           default: latest
-          relation:
-            - action: show
-              when:
-                name: usexsit
-                value: true
         - name: imageRegistryCredentialsId
           schema:
             type: string
@@ -276,12 +113,9 @@ spec:
           display:
             type: alauda.io/jenkinscredentials
             name:
-              zh-CN: "目标镜像registry凭据"
-              en: "Registry credentials"
+              zh-CN: "目标镜像凭据"
+              en: "Target image registry credentials"
             description:
-              zh-CN: "推送目标镜像所在镜像中心的登录凭据"
-              en: "Credentials of target registry"
+              zh-CN: "源镜像仓库为有身份验证的第三方仓库，则需要使用凭据。可直接选择凭据，或为其添加新凭据"
+              en: "If the source repository is an authenticated third party repository, you must use credentials. You can directly select an added credential or add new ones."
           required: false
-        
-
-
