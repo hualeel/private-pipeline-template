@@ -24,7 +24,7 @@ spec:
     - name: SyncImage
       tasks:
         - name: SyncImage
-          type: public/alaudasyncimage
+          type: alaudaorg/alaudasyncimage
           approve:
             message: "是否要真的同步镜像"
             timeout: 3600 
