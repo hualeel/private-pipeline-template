@@ -3,13 +3,13 @@ kind: PipelineTemplate
 metadata:
   name: alaudaSyncImage
   annotations:
-    alauda.io/displayName.zh-CN: 同步镜像
+    alauda.io/displayName.zh-CN: 同步镜像A
     alauda.io/displayName.en: Sync Image
     alauda.io/description.zh-CN: 同步镜像模板。将一个镜像从源仓库同步到目标仓库。若源镜像或目标镜像仓库为私有仓库（内网地址），需确保 Jenkins 服务与其在同一网络环境内，方可使用。
     alauda.io/description.en: Sync image template. Synchronize a Image tag from the source repository to the target repository. If the source image or target image repository is a private repository (intranet address), ensure that Jenkins services are available in the same network.
     alauda.io/readme.zh-CN: 
     alauda.io/readme.en: 
-    alauda.io/version: v0.3
+    alauda.io/version: v0.31
     alauda.io/style.icon: 
   labels:
     category: syncImage
@@ -70,7 +70,7 @@ spec:
           display:
             type: alauda.io/jenkinscredentials
             name:
-              zh-CN: "源镜像凭据"
+              zh-CN: "源镜像凭据SECRET1"
               en: "Source image registry credentials"
             description:
               zh-CN: "若源镜像仓库为有身份验证的第三方仓库，则需要使用凭据。可直接选择凭据，或为其添加新凭据"
@@ -113,7 +113,7 @@ spec:
           display:
             type: alauda.io/jenkinscredentials
             name:
-              zh-CN: "目标镜像凭据"
+              zh-CN: "目标镜像凭据SECRET2"
               en: "Target image registry credentials"
             description:
               zh-CN: "源镜像仓库为有身份验证的第三方仓库，则需要使用凭据。可直接选择凭据，或为其添加新凭据"
