@@ -9,7 +9,7 @@ metadata:
     alauda.io/description.en: Sync image template. Synchronize a Image tag from the source repository to the target repository. If the source image or target image repository is a private repository (intranet address), ensure that Jenkins services are available in the same network.
     alauda.io/readme.zh-CN: 
     alauda.io/readme.en: 
-    alauda.io/version: v0.31
+    alauda.io/version: v0.32
     alauda.io/style.icon: 
   labels:
     category: syncImage
@@ -55,7 +55,7 @@ spec:
           display:
             type: string
             name:
-              zh-CN: "源镜像版本"
+              zh-CN: "源镜像版本TAG1"
               en: "Source image tag"
             description:
               zh-CN: "同步镜像时，源镜像的版本，如：latest"
@@ -98,7 +98,7 @@ spec:
           display:
             type: string
             name:
-              zh-CN: "目标镜像版本"
+              zh-CN: "目标镜像版本TAG2"
               en: "Target image tag"
             description:
               zh-CN: "同步镜像时，源镜像的版本，如：latest"
