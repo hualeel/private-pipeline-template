@@ -1,0 +1,66 @@
+apiVersion: devops.alauda.io/v1alpha1
+kind: PipelineTemplate
+metadata:
+  name: alaudaTestResult
+  annotations:
+    alauda.io/displayName.zh-CN: 测试结果
+    alauda.io/displayName.en: test result 
+    alauda.io/description.zh-CN: 测试结果
+    alauda.io/description.en: test result 
+    alauda.io/readme.zh-CN: 测试结果
+    alauda.io/readme.en: test result 
+    alauda.io/version: v0.1
+  labels:
+    category: Test
+spec:
+  engine: graph
+  withSCM: true
+  agent:
+    label: docker
+  options:
+    timeout: 5400
+  stages:
+    - name: Clone
+      tasks:
+        - name: Clone
+          type: public/clone
+    - name: Maventest
+      tasks:
+        - name: maventeset
+          type: public/alaudamaventest
+
+    - name: TestResult
+      tasks:
+        - name: TestResult
+          type: public/alaudaTestResult
+          options:
+            timeout: 3600
+  arguments:
+        - name: "maventest"
+          schema:
+            type: string
+          binding:
+            - alaudamaventest.args.maventest
+          display:
+            type: string
+            name:
+              zh-CN: "maven测试"
+              en: "maven test"
+            description:
+              zh-CN: maven测试
+              en: Path of ci command executing
+          required: true   
+        - name: "testresultxml"
+          schema:
+            type: string
+          binding:
+            - alaudaTestResule.args.testresultxml
+          display:
+            type: string
+            name:
+              zh-CN: "test result xml 位置"
+              en: "test result "
+            description:
+              zh-CN: "XML 位置"
+              en: the location of xml
+          required: true 

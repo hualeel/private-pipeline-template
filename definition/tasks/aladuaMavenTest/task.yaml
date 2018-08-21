@@ -1,0 +1,37 @@
+apiVersion: devops.alauda.io/v1alpha1
+kind: PipelineTaskTemplate
+metadata:
+  name: alaudamaventest
+  annotations:
+    alauda.io/displayName.zh-CN: maven测试
+    alauda.io/displayName.en: maventest
+    alauda.io/description.zh-CN: maven测试
+    alauda.io/description.en: maventest
+    alauda.io/readme.zh-CN: 
+    alauda.io/readme.en: 
+    alauda.io/version: v0.1
+    alauda.io/style.icon: 
+  labels:
+    catgory: maventest
+spec:
+  engine: gotpl
+  body: |+
+        sh 'mvn test'
+
+
+  arguments:
+
+    - name: "maventest"
+      schema:
+        type: string
+      display:
+        type: string
+        name:
+          zh-CN: "maven测试有没有"
+          en: "Is There Maven？"
+        description:
+          zh-CN: "maven测试有没有"
+          en: "Is There Maven？."
+      required: false
+      default: latest
+
