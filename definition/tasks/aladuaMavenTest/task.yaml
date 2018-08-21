@@ -9,7 +9,7 @@ metadata:
     alauda.io/description.en: maventest
     alauda.io/readme.zh-CN: 
     alauda.io/readme.en: 
-    alauda.io/version: v0.1
+    alauda.io/version: v0.1.1
     alauda.io/style.icon: 
   labels:
     catgory: maventest

@@ -9,7 +9,7 @@ metadata:
     alauda.io/description.en: TestResult
     alauda.io/readme.zh-CN: 测试结果
     alauda.io/readme.en: TestResult
-    alauda.io/version: v0.1
+    alauda.io/version: v0.1.1
     alauda.io/style.icon: 
   labels:
     catgory: Test
