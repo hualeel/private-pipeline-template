@@ -24,17 +24,6 @@ spec:
       tasks:
         - name: Clone
           type: public/clone
-    - name: Maventest
-      tasks:
-        - name: maventeset
-          type: public/alaudamaventest
-
-    - name: TestResult
-      tasks:
-        - name: TestResult
-          type: public/alaudaTestResult
-          options:
-            timeout: 3600
   arguments:
         - name: "maventest"
           schema:
