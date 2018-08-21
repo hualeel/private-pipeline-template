@@ -1,0 +1,33 @@
+apiVersion: devops.alauda.io/v1alpha1
+kind: PipelineTaskTemplate
+metadata:
+  name: alaudaTestResult
+  annotations:
+    alauda.io/displayName.zh-CN: 测试结果
+    alauda.io/displayName.en: TestResult
+    alauda.io/description.zh-CN: 测试结果
+    alauda.io/description.en: TestResult
+    alauda.io/readme.zh-CN: 测试结果
+    alauda.io/readme.en: TestResult
+    alauda.io/version: v0.1
+    alauda.io/style.icon: 
+  labels:
+    catgory: Test
+spec:
+  engine: gotpl
+  agent:
+    label: docker
+  body: |+
+        junit '**/target/surefire-reports/**/*.xml'
+
+  arguments:
+
+    - name: "testresultxml"
+      schema:
+        type: string
+      display:
+        type: string
+        name:
+          zh-CN: "测试报告（XML）"
+          en: "test result (XML)"
+      required: true

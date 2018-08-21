@@ -9,7 +9,7 @@ metadata:
     alauda.io/description.en: test result 
     alauda.io/readme.zh-CN: 测试结果
     alauda.io/readme.en: test result 
-    alauda.io/version: v0.1
+    alauda.io/version: v0.1.1
   labels:
     category: Test
 spec:
@@ -24,6 +24,7 @@ spec:
       tasks:
         - name: Clone
           type: public/clone
+
   arguments:
         - name: "maventest"
           schema:
@@ -43,7 +44,7 @@ spec:
           schema:
             type: string
           binding:
-            - alaudaTestResule.args.testresultxml
+            - alaudaTestResult.args.testresultxml
           display:
             type: string
             name:
