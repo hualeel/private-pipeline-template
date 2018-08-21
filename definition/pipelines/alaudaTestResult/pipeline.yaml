@@ -9,7 +9,7 @@ metadata:
     alauda.io/description.en: test result 
     alauda.io/readme.zh-CN: 测试结果
     alauda.io/readme.en: test result 
-    alauda.io/version: v0.1.1
+    alauda.io/version: v0.1.2
   labels:
     category: Test
 spec:
@@ -23,8 +23,18 @@ spec:
     - name: Clone
       tasks:
         - name: Clone
-          type: public/clone
+          type: alaudaorg/clone
+    - name: Maventest
+      tasks:
+        - name: maventeset
+          type: alaudaorg/alaudamaventest
 
+    - name: TestResult
+      tasks:
+        - name: TestResult
+          type: alaudaorg/alaudaTestResult
+          options:
+            timeout: 3600
   arguments:
         - name: "maventest"
           schema:
