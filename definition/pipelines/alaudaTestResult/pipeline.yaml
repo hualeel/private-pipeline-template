@@ -16,23 +16,21 @@ metadata:
 spec:
   engine: graph
   withSCM: true
-  agent:
-    label: docker
   options:
     timeout: 5400
   stages:
     - name: Clone
       tasks:
         - name: Clone
-          type: alaudaorg/clone
+          type: public/clone
     - name: Maventest
       tasks:
         - name: maventeset
-          type: alaudaorg/alaudamaventest
+          type: public/alaudamaventest
     - name: TestResult
       tasks:
         - name: TestResult
-          type: alaudaorg/alaudaTestResult
+          type: public/alaudaTestResult
           options:
             timeout: 3600
   arguments:

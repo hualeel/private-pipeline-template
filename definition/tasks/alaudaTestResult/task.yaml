@@ -15,13 +15,9 @@ metadata:
     catgory: Test
 spec:
   engine: gotpl
-  agent:
-    label: docker
   body: |+
         junit '**/target/surefire-reports/**/*.xml'
-
   arguments:
-
     - name: "testresultxml"
       schema:
         type: string
@@ -30,4 +26,3 @@ spec:
         name:
           zh-CN: "测试报告（XML）"
           en: "test result (XML)"
-      required: true

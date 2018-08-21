@@ -16,11 +16,9 @@ metadata:
 spec:
   engine: gotpl
   body: |+
+        sh 'mv ./example/* ./'
         sh 'mvn test'
-
-
   arguments:
-
     - name: "maventest"
       schema:
         type: string
