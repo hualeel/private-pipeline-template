@@ -8,7 +8,7 @@ metadata:
     displayName.en: "Golang Build"
     description.zh-CN: "克隆代码 -> Golang 构建 -> 代码扫描 -> Docker 构建"
     description.en: "Clone -> Golang Build -> Code Scan -> Docker Build"
-    version: "2.10.4"
+    version: "2.10.5"
     style.icon: golang,docker,sonarqube
   labels:
     category: Build
@@ -30,20 +30,10 @@ spec:
       tasks:
         - name: golang
           kind: PipelineTaskTemplate
-    - name: "Code Scan"
-      tasks:
-        - name: sonar
-          kind: PipelineTaskTemplate
-          relation:
-            - action: show
-              when:
-                name: UseSonarQube
-                value: true
     - name: "Docker Build"
       tasks:
         - name: build-docker
           kind: ClusterPipelineTaskTemplate
-          type: public/build-docker
   post:
     always:
       - name: notification
@@ -127,111 +117,6 @@ spec:
           required: true
           value: ""
           default: 'go build'
-    - displayName:
-        zh-CN: "代码扫描"
-        en: "Code Scanning"
-      items:
-        - name: "UseSonarQube"
-          schema:
-            type: boolean
-          display:
-            type: boolean
-            name:
-              zh-CN: "开启代码扫描"
-              en: "Use code analysis"
-            description:
-              zh-CN: "开启后，进行代码扫描"
-              en: "Whether to use Sonarqube for code scan"
-          required: false
-          value: "false"
-        - name: "CodeQualityBinding"
-          schema:
-            type: alauda.io/toolbinding
-          binding:
-            - sonar.args.CodeQualityBinding
-          required: true
-          value: ""
-          display:
-            type: alauda.io/toolbinding
-            args:
-              bindingKind: codequalitytool
-              bindingToolType: Sonarqube
-            name:
-              zh-CN: "SonarQube"
-              en: "SonarQube"
-            description:
-              zh-CN: "选择要使用的 SonarQube"
-              en: "Select a SonarQube"
-          relation:
-            - action: show
-              when:
-                name: UseSonarQube
-                value: true
-        - name: "EnableBranchAnalysis"
-          schema:
-            type: boolean
-          required: false
-          binding:
-            - sonar.args.EnableBranchAnalysis
-          value: "false"
-          display:
-            type: boolean
-            advanced: true
-            name:
-              zh-CN: "区分代码分支"
-              en: "Enable branch analysis"
-            description:
-              zh-CN: "扫描主分支以外的分支时，若想查看这些分支的扫描结果，需要在 Sonarqube 支持多代码分支且要至少扫描过一次主分支的前提下，开启此开关才可扫描成功。"
-              en: "When scanning branches other than the main branch while keeping separate results, the Sonarqube instance needs to support branch analysis and turn on this feature"
-          relation:
-            - action: show
-              when:
-                name: UseSonarQube
-                value: true
-        - name: "AnalysisParameters"
-          schema:
-            type: string
-          required: false
-          binding:
-            - sonar.args.AnalysisParameters
-          value: |
-            sonar.sources=.
-            sonar.sourceEncoding=UTF-8
-          display:
-            type: stringMultiline
-            advanced: false
-            name:
-              zh-CN: "代码扫描参数"
-              en: "Analysis Parameters"
-            description:
-              zh-CN: "为 Sonar Scanner 设置分析参数。当目录中存在 sonar-project.properties 文件时，将会忽略这个参数。详细参数见文档: https://docs.sonarqube.org/latest/analysis/analysis-parameters 和 https://docs.sonarqube.org/display/PLUG/SonarGo"
-              en: "Set analysis parameters for Sonar Scanner. When 'sonar-project.properties' file exists in the code repository, this argument will be omitted. See https://docs.sonarqube.org/latest/analysis/analysis-parameters and https://docs.sonarqube.org/display/PLUG/SonarGo"
-          relation:
-            - action: show
-              when:
-                name: UseSonarQube
-                value: true
-        - name: "FailedIfNotPassQualityGate"
-          schema:
-            type: boolean
-          required: false
-          binding:
-            - sonar.args.FailedIfNotPassQualityGate
-          value: "false"
-          display:
-            type: boolean
-            advanced: true
-            name:
-              zh-CN: "质量阈未通过终止流水线"
-              en: "Fail pipeline when quality gate fails"
-            description:
-              zh-CN: "开启后，代码扫描结果为失败时，流水线执行状态变为失败，终止流水线"
-              en: "Fails pipeline execution when quality gate fails"
-          relation:
-            - action: show
-              when:
-                name: UseSonarQube
-                value: true
     - displayName:
         zh-CN: "Docker 构建"
         en: "Docker Build"
