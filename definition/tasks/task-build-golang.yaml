@@ -1,0 +1,43 @@
+apiVersion: devops.alauda.io/v1alpha1
+kind: ClusterPipelineTaskTemplate
+metadata:
+  name: golang
+  annotations:
+    displayName.zh-CN: Golang构建
+    displayName.en: Golang Build
+    description.zh-CN: 构建Golang程序
+    description.en: Build a Golang project
+    readme.zh-CN: 构建Golang程序
+    readme.en: Build a Golang project
+    version: "2.6.0"
+    style.icon: ""
+  labels:
+    category: CI
+spec:
+  engine: gotpl
+  body: |+
+    script {
+        env.GOPATH = WORKSPACE
+
+        dir(RELATIVE_DIRECTORY) {
+            container('golang') {
+                sh """
+                  {{.buildCommand}}
+                """
+            }
+        }
+    }
+  arguments:
+    - name: "buildCommand"
+      schema:
+        type: string
+      display:
+        type: code
+        name:
+          zh-CN: "构建命令"
+          en: "Build Command"
+        description:
+          zh-CN: "自定义更详细的构建命令。默认为：go build"
+          en: "build command. Defaults to: go build"
+      required: false
+      default: 'go build'

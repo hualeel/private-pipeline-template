@@ -1,0 +1,169 @@
+apiVersion: devops.alauda.io/v1alpha1
+kind: ClusterPipelineTaskTemplate
+metadata:
+  name: build-docker
+  annotations:
+    displayName.zh-CN: "Docker 构建"
+    displayName.en: "Docker Build"
+    description.zh-CN: "Docker 构建"
+    description.en: "Docker Build"
+    readme.zh-CN: "Docker 构建"
+    readme.en: "Docker Build"
+    version: "2.8.2"
+    style.icon: ""
+  labels:
+    category: CI
+spec:
+  engine: gotpl
+  body: |+
+    script {
+        def retryCount = {{ if .retry }}{{ .retry }}{{else}}0{{end}}
+        def repositoryAddr = '{{.imageRepository.repositoryPath}}'.replace("http://","").replace("https://","")
+        env.IMAGE_REPO = repositoryAddr
+
+        def credentialId = ''
+        credentialId = "{{ .imageRepository.credentialId }}"
+        dir(RELATIVE_DIRECTORY) {
+            container('tools'){
+                retry(retryCount) {
+                    try{
+                        if (credentialId != '') {
+                          withCredentials([usernamePassword(credentialsId: "${credentialId}", passwordVariable: 'PASSWD', usernameVariable: 'USER')]) {
+                            sh "docker login ${IMAGE_REPO} -u ${USER} -p ${PASSWD}"
+                            }
+                          }
+                        }
+                    catch(err){
+                        echo err.getMessage()
+                        alaudaDevops.withCluster() {
+                              def secretNamespace = "{{ .imageRepository.secretNamespace }}"
+                              def secretName = "{{ .imageRepository.secretName }}"
+                              def secret = alaudaDevops.selector( "secret/${secretName}" )
+                              alaudaDevops.withProject( "${secretNamespace}" ) {
+                                  def secretjson = secret.object().data['.dockerconfigjson']
+                                  def dockerconfigjson = base64Decode("${secretjson}");
+                                  writeFile file: 'config.json', text: dockerconfigjson
+                                  sh """
+                                    set +x
+                                    mkdir -p ~/.docker
+                                    mv -f config.json ~/.docker/config.json
+                                  """
+                              }
+                          }
+                    }
+                    def buildImages = []
+                    {{- if eq .imageRepository.tag "" }}
+
+                      def imageRepoTag = "${IMAGE_REPO}"
+                      def imageRepoTag = "${IMAGE_REPO}:latest"
+
+                      sh " docker build -t ${imageRepoTag} -f {{.dockerfile}} {{.buildArguments}} {{ if .context }}{{.context}}{{else}}.{{end}}"
+                      docker push ${imageRepoTag}
+                      buildImages.add(imageRepoTag as String)
+                    {{- else }}
+                      def tagswithcomma = "{{.imageRepository.tag}}"
+                      def tags = tagswithcomma.split(",")
+                      def incubatorimage = "${IMAGE_REPO}:${tags[0]}"
+                      sh " docker build -t ${incubatorimage} -f {{.dockerfile}} {{.buildArguments}} {{ if .context }}{{.context}}{{else}}.{{end}}"
+                      tags.each { tag ->
+                        sh """
+                            docker tag ${incubatorimage} ${IMAGE_REPO}:${tag}
+                            docker push ${IMAGE_REPO}:${tag}
+                        """
+                        buildImages.add("${IMAGE_REPO}:${tag}" as String)
+                      }
+                    {{- end }}
+                    alaudaPipeline.appendInfo(STAGE_NAME, [build_image: buildImages], '_Docker')
+                    if (credentialId != '') {
+                        sh "docker logout ${IMAGE_REPO}"
+                    }
+                }
+            }
+        }
+    }
+  arguments:
+    - name: "imageRepository"
+      schema:
+        type: alauda.io/dockerimagerepositorymix
+      required: true
+      display:
+        type: alauda.io/dockerimagerepositorymix
+        name:
+          zh-CN: "镜像仓库"
+          en: Repository
+        description:
+          zh-CN: "选择或者输入镜像仓库"
+          en: ""
+    - name: "dockerfile"
+      schema:
+        type: string
+      display:
+        type: string
+        name:
+          zh-CN: "Dockerfile"
+          en: "Dockerfile"
+        description:
+          zh-CN: "Dockerfile 在代码仓库中的绝对路径"
+          en: ""
+      required: true
+      default: 'Dockerfile'
+    - name: "context"
+      schema:
+        type: string
+      display:
+        type: string
+        name:
+          zh-CN: "构建上下文"
+          en: "Build Context"
+        description:
+          zh-CN: "构建过程可以引用上下文中的任何文件。例如，构建中可以使用 COPY 命令在上下文中引用文件"
+          en: "The build process can refer to any of the files in the context. For example, your build can use a COPY instruction to reference a file in the context"
+      required: false
+      default: '.'
+    - name: "buildArguments"
+      schema:
+        type: string
+      display:
+        type: string
+        name:
+          zh-CN: "构建参数"
+          en: "Build Arguments"
+        description:
+          zh-CN: "自定义docker build Options，如 --add-host，多个 Options 用空格隔开；可参考 https://docs.docker.com/engine/reference/commandline/build/"
+          en: ""
+      required: false
+      default: ''
+    - name: "retry"
+      schema:
+        type: string
+      display:
+        type: string
+        name:
+          zh-CN: "重试次数"
+          en: "Retry Times"
+        description:
+          zh-CN: "生成镜像时的失败重试次数"
+          en: ""
+      required: false
+      default: '3'
+  exports:
+  - name: IMAGE_REPO
+    description:
+      zh-CN: 镜像仓库
+      en: Image Repo
+  dependencies:
+    plugins:
+      - name: workflow-basic-steps
+        version: "2.9"
+      - name: docker-workflow
+        version: "1.17"
+  view:
+    markdown: |-
+      {{ if eq $item.type "_Docker"}}
+      ## {{$item.name}}
+      
+      | Name | Value |
+      | :--- | :---- |
+      | 镜像地址 | {{ range $index, $v := $item.value.build_image }}{{if ne $index 0}}","{{end}}{{$v}}{{end}} |
+      
+      {{ end}}
