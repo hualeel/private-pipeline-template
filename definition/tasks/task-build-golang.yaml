@@ -9,7 +9,7 @@ metadata:
     description.en: Build a Golang project
     readme.zh-CN: 构建Golang程序
     readme.en: Build a Golang project
-    version: "2.6.0"
+    version: "2.6.1"
     style.icon: ""
   labels:
     category: CI

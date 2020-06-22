@@ -8,7 +8,7 @@ metadata:
     displayName.en: "Golang Build"
     description.zh-CN: "克隆代码 -> Golang 构建 -> 代码扫描 -> Docker 构建"
     description.en: "Clone -> Golang Build -> Code Scan -> Docker Build"
-    version: "2.10.1"
+    version: "2.10.2"
     style.icon: golang,docker,sonarqube
   labels:
     category: Build

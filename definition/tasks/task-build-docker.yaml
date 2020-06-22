@@ -9,7 +9,7 @@ metadata:
     description.en: "Docker Build"
     readme.zh-CN: "Docker 构建"
     readme.en: "Docker Build"
-    version: "2.8.2"
+    version: "2.8.3"
     style.icon: ""
   labels:
     category: CI
