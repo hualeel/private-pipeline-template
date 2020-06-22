@@ -4,8 +4,8 @@ metadata:
   name: GoLangBuilder
   namespace: default
   annotations:
-    displayName.zh-CN: "Golang 构建"
-    displayName.en: "Golang Build"
+    displayName.zh-CN: "Custom Golang 构建"
+    displayName.en: "Costom Golang Build"
     description.zh-CN: "克隆代码 -> Golang 构建 -> 代码扫描 -> Docker 构建"
     description.en: "Clone -> Golang Build -> Code Scan -> Docker Build"
     version: "2.10.5"
