@@ -1,0 +1,44 @@
+apiVersion: devops.alauda.io/v1alpha1
+kind: PipelineTaskTemplate
+metadata:
+  name: notification
+  annotations:
+    displayName.zh-CN: "通知"
+    displayName.en: "Notification"
+    description.zh-CN: "通知"
+    description.en: "Notification"
+    version: "1.0.1"
+    style.icon: ""
+  labels:
+    category: action
+spec:
+  engine: gotpl
+  body: |+
+    script {
+      alaudaPipeline.createOrUpdateInfo("summary", [status: currentBuild.currentResult, create_date: new Date().format("yyyy-MM-dd HH:mm:ss"), link: BUILD_URL], "_Summary")
+      retry(3) {
+        try {
+          alaudaDevops.notificationSender()
+          .setData(alaudaPipeline.getData())
+          {{- range $_, $value := .PlatformNotification}}
+          .bindingNotification("{{$value.namespace}}", "{{$value.name}}")
+          {{- end}}
+          .send()
+          } catch(err){
+          echo err.getMessage()
+        }
+      }
+    }
+  arguments:
+    - name: "PlatformNotification"
+      schema:
+        type: alauda.io/notificationmix
+      required: true
+      display:
+        type: alauda.io/notificationmix
+        name:
+          zh-CN: "通知"
+          en: Notification
+        description:
+          zh-CN: "通知"
+          en: "Notification"
