@@ -1,5 +1,5 @@
 apiVersion: devops.alauda.io/v1alpha1
-kind: ClusterPipelineTemplate
+kind: PipelineTemplate
 metadata:
   name: GoLangBuilder
   namespace: default
@@ -25,18 +25,15 @@ spec:
     - name: Clone
       tasks:
         - name: clone
-          kind: ClusterPipelineTaskTemplate
-          type: public/clone
+          kind: PipelineTaskTemplate
     - name: "Golang Build"
       tasks:
         - name: golang
-          kind: ClusterPipelineTaskTemplate
-          type: public/golang
+          kind: PipelineTaskTemplate
     - name: "Code Scan"
       tasks:
         - name: sonar
-          kind: ClusterPipelineTaskTemplate
-          type: public/sonar
+          kind: PipelineTaskTemplate
           relation:
             - action: show
               when:
@@ -50,7 +47,7 @@ spec:
   post:
     always:
       - name: notification
-        kind: ClusterPipelineTaskTemplate
+        kind: PipelineTaskTemplate
         relation:
           - action: show
             when:

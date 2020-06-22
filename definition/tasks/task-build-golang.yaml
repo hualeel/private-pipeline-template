@@ -1,5 +1,5 @@
 apiVersion: devops.alauda.io/v1alpha1
-kind: ClusterPipelineTaskTemplate
+kind: PipelineTaskTemplate
 metadata:
   name: golang
   annotations:

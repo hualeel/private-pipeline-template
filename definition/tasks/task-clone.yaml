@@ -1,5 +1,5 @@
 apiVersion: devops.alauda.io/v1alpha1
-kind: ClusterPipelineTaskTemplate
+kind: PipelineTaskTemplate
 metadata:
   name: clone
   namespace: default
@@ -101,27 +101,6 @@ spec:
       {{- end}}
       env.TIMESTAMP = new Date().format("yyyyMMddHHmmss")
     }
-  exports:
-    - name: GIT_COMMIT
-      description:
-        zh-CN: "Git Commit ID"
-        en: "Git Commit ID"
-    - name: GIT_BRANCH
-      description:
-        zh-CN: "Git 分支名称"
-        en: "Git Branch Name"
-    - name: RELATIVE_DIRECTORY
-      description:
-        zh-CN: "相对目录"
-        en: "RelativeDirectory"
-    - name: GIT_BRANCH_AS_TAG
-      description:
-        zh-CN: "可以作为 Tag 的 Git Branch Name"
-        en: "Git Branch Without Origin"
-    - name: TIMESTAMP
-      description:
-        zh-CN: "时间戳: yyyyMMddHHmmss"
-        en: "The time stamp: yyyyMMddHHmmss"
   arguments:
     - name: "PlatformCodeRepository"
       schema:
@@ -161,15 +140,3 @@ spec:
         description:
           zh-CN: "指定签出 Git 仓库的本地目录(相对于 workspace 根目录)。若为空，将使用 workspace 根目录"
           en: "Specify a local directory (relative to the workspace root) where the Git repository will be checked out. If left empty, the workspace root itself will be used"
-  view:
-    markdown: |-
-      {{ if eq $item.type "_Clone"}}
-      ## {{$item.name}}
-      
-      | Name | Value |
-      | :--- | :---- |
-      | commitID | {{$item.value.commit_id}} |
-      | 分支 | {{$item.value.branch}} |
-      | 代码仓库 | [{{$item.value.repo_url}}]({{$item.value.repo_url}}) |
-      
-      {{ end}}

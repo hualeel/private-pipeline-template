@@ -1,5 +1,5 @@
 apiVersion: devops.alauda.io/v1alpha1
-kind: ClusterPipelineTaskTemplate
+kind: PipelineTaskTemplate
 metadata:
   name: build-docker
   annotations:
@@ -146,24 +146,9 @@ spec:
           en: ""
       required: false
       default: '3'
-  exports:
-  - name: IMAGE_REPO
-    description:
-      zh-CN: 镜像仓库
-      en: Image Repo
   dependencies:
     plugins:
       - name: workflow-basic-steps
         version: "2.9"
       - name: docker-workflow
         version: "1.17"
-  view:
-    markdown: |-
-      {{ if eq $item.type "_Docker"}}
-      ## {{$item.name}}
-      
-      | Name | Value |
-      | :--- | :---- |
-      | 镜像地址 | {{ range $index, $v := $item.value.build_image }}{{if ne $index 0}}","{{end}}{{$v}}{{end}} |
-      
-      {{ end}}
